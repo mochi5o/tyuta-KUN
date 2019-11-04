@@ -1,7 +1,7 @@
 function postUrl() {
   var obj = SpreadsheetApp.openById("スプレッドシートのID");
   var scheduleSheet = obj.getSheetByName("日程");
-  var today = new Moment.moment("2019/11/8"); //<-テスト用のダミーデータ。次回の課題提出後の金曜日に設定
+  var today = new Moment.moment();
   var yesterday = today.subtract(1, "days"),
   var sheetdate = scheduleSheet.getRange("D3:D12").getValues();
   var message = "";

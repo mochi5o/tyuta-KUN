@@ -26,7 +26,7 @@ function postUrl() {
       sh_id = sheet.getSheetId(),
       kadaiUrl = ss_url + "#gid=" + sh_id;
     //Logger.log(kadaiUrl);
-    var data = sheet.getRange("K3:N23").getValues();
+    var data = sheet.getRange("J3:N23").getValues();
     //Logger.log(data);
     fetch(getValuesFromSheet, data, kadaiUrl);
   }

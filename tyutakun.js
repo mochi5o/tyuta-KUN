@@ -2,7 +2,6 @@
 var SLACK_FOOK_URL = PropertiesService.getScriptProperties().getProperty("SLACK_FOOK_URL");
 var SEET_ID = PropertiesService.getScriptProperties().getProperty("SEET_ID");
 
-
 function getDueDates() {
   var obj = SpreadsheetApp.openById(SEET_ID),
     scheduleSheet = obj.getSheetByName("日程"),
@@ -27,7 +26,8 @@ function calcDiffDays() {
   Logger.log("[calcDiffDays]");
   for (i = 0; i < dueDates.length; i++) {
     var dueDate = new Moment.moment(dueDates[i], "YYYY年M月D日");
-    var dif = yesterday.diff(dueDate, "days");
+    //var dif = yesterday.diff(dueDate, "days");
+    var dif = today.diff(dueDate, "days");
     difDays.push(dif);
   }
   return difDays;
@@ -38,6 +38,7 @@ function postUrl() {
   var obj = SpreadsheetApp.openById(SEET_ID),
     scheduleSheet = obj.getSheetByName("日程"),
     diffDays = calcDiffDays();
+  Logger.log("postURL:" + diffDays);
   for (i = 0; i < diffDays.length; i++) {
     if (diffDays[i] == 0) {
       getData(i);
@@ -48,14 +49,14 @@ function postUrl() {
     var cell = String("A" + Number(i + 3));
     Logger.log(cell);
     var sheetNum = "0" + Number(scheduleSheet.getRange(cell).getValue());
-    //sheetNum = sheetNum.slice(-2);
+    sheetNum = sheetNum.slice(-2);
     Logger.log(sheetNum);
     var sheet = obj.getSheetByName(sheetNum);
     var ss_url = obj.getUrl(),
       sh_id = sheet.getSheetId(),
       kadaiUrl = ss_url + "#gid=" + sh_id;
     //Logger.log(kadaiUrl);
-    var data = sheet.getRange("J3:N23").getValues();
+    var data = sheet.getRange("J3:N12").getValues();
     Logger.log(data);
     fetch(getValuesFromSheet, data, kadaiUrl);
   }
@@ -76,7 +77,7 @@ function postUrl() {
     var payload = {
       "text": String("<!channel>\n:bug: 課題が提出されたよー！！Checkしてね:wink::bug::bug:\n今回の課題URL :point_right:" + link + "\n" + message).replace(/,/g, ""),
       "username": "チュー太くん",  //botの名前
-      "channel": "チュー太くん",   //投稿するチャンネル名
+      "channel": "チュー太くんテスト運用中",   //投稿するチャンネル名
     };
 
     // Slackに送信
@@ -91,6 +92,7 @@ function postUrl() {
 
 function checkRemindar() {
   var diffDays = calcDiffDays();
+  Logger.log("checkRemindar:" + diffDays);
   for (i = 0; i < diffDays.length; i++) {
     if (diffDays[i] == 1) {
       var payload = {
@@ -113,6 +115,7 @@ function checkRemindar() {
 
 function commentRemindar() {
   var diffDays = calcDiffDays();
+  Logger.log("commentRemindar:" + diffDays);
   for (i = 0; i < diffDays.length; i++) {
     if (diffDays[i] == 2) {
       var payload = {
